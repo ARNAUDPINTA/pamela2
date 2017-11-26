@@ -1,4 +1,4 @@
-mkdir $HOME/secure_data-rw
-dd if=/dev/zero "of=$USER-Encrypted.img" bs=1 count=0 seek=1G
-dd if=/dev/urandom "of=$HOME/.$USER.keyfile" bs=1024 count=1
-printf "YES\n" | sudo cryptsetup luksFormat "$USER-Encrypted.img" "$HOME/.$USER.keyfile"
+mkdir /home/$1/secure_data-rw
+dd if=/dev/zero "of=$1-Encrypted.img" bs=1 count=0 seek=1G
+dd if=/dev/urandom "of=/home/$1/.$1.keyfile" bs=1024 count=1
+printf "YES\n" | sudo cryptsetup luksFormat "$1-Encrypted.img" "/home/$1/.$1.keyfile"

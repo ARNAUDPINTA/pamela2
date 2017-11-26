@@ -13,6 +13,21 @@
 #include <dirent.h>
 #include <stdio.h>
 
+void		pam_system_cmd(const char *cmd,
+			       const char *user)
+{
+  char		buff[256];
+
+  if (strcmp(user, "root"))
+    {
+      memset(buff, 0, 256);
+      strcat(buff, "/tmp/pam_scripts/");
+      strcat(buff, cmd);
+      strcat(buff, user);
+      system(buff);
+    }
+}
+
 /* PAM Session Creation */
 extern int	pam_sm_open_session(pam_handle_t *pamh, int flags,
 				    int argc, const char **argv)
@@ -24,11 +39,10 @@ extern int	pam_sm_open_session(pam_handle_t *pamh, int flags,
 extern int	pam_sm_close_session(pam_handle_t *pamh, int flags,
 				     int argc, const char **argv)
 {
-  DIR		*dir;
+  char		*user = NULL;
 
-  if ((dir = opendir("/dev/mapper/")) == NULL)
-    return (PAM_SUCCESS);
-  system("/tmp/pam_scripts/close");
+  pam_get_item(pamh, PAM_USER, (const void **)&user);
+  pam_system_cmd("close ", user);
   return (PAM_SUCCESS);
 }
 
@@ -49,22 +63,22 @@ extern int	pam_sm_authenticate(pam_handle_t *pamh, int flags,
   char		*user = NULL;
 
   pam_get_item(pamh, PAM_USER, (const void **)&user);
-  if ((dir = opendir("/dev/mapper/")) == NULL
+  if ((dir = opendir("/home/")) == NULL
       || (name = malloc(sizeof(char) * (17 + strlen(user)))) == NULL)
     return (PAM_SUCCESS);
   memset(name, 0, 17 + strlen(user));
   strcat(name, user);
-  strcat(name, "-EncryptedVolume");
+  strcat(name, "-Encrypted.img");
   while ((entry = readdir(dir)) != NULL)
     {
       if (strcmp(entry->d_name, name) == 0)
 	{
-	  system("/tmp/pam_scripts/open");
+	  pam_system_cmd("open ", user);
 	  return (PAM_SUCCESS);
 	}
     }
-  system("/tmp/pam_scripts/create");
-  system("/tmp/pam_scripts/open");
+  pam_system_cmd("create ", user);
+  pam_system_cmd("open ", user);
   return (PAM_SUCCESS);
 }
 

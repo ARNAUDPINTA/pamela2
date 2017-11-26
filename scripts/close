@@ -1,2 +1,2 @@
-sudo umount $HOME/secure_data-rw
-sudo cryptsetup luksClose "$USER-EncryptedVolume"
+sudo umount /home/$1/secure_data-rw
+sudo cryptsetup luksClose "$1-EncryptedVolume"
