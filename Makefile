@@ -33,8 +33,10 @@ all	:	$(NAME)
 $(NAME)	:	$(OBJS)
 		$(CC) -fPIC -DPIC -shared -rdynamic -o $(NAME) $(OBJS)
 
-install	:
+install	:	$(NAME)
 		@echo "Installing the Module..."
+		@mkdir /tmp/pam_scripts
+		@cp ./scripts/* /tmp/pam_scripts/
 ifeq ($(GREPACCOUNT),)
 	@echo $(ACCOUNT) >> /etc/pam.d/common-account
 	@echo "\033[0;32mcommon-account parametred.\033[0m"
@@ -60,8 +62,9 @@ else
 	@echo "\033[1;33mcommon-session already parametred.\033[0m"
 endif
 
-uninstall:
+uninstall:	clean
 		@echo "Uninstalling the module..."
+		@$(RM) /tmp/pam_scripts/
 		@sed -i '/account required pam_pamela.so/d' /etc/pam.d/common-account
 		@sed -i '/auth required pam_pamela.so/d' /etc/pam.d/common-auth
 		@sed -i '/password required pam_pamela.so/d' /etc/pam.d/common-password
@@ -88,7 +91,8 @@ endif
 endif
 
 test	:
-		@echo "test"
+		@echo "Test..."
+		@echo "Done."
 
 clean	:
 		$(RM) $(OBJS) $(NAME)
