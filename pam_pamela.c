@@ -63,7 +63,7 @@ extern int	pam_sm_authenticate(pam_handle_t *pamh, int flags,
   char		*user = NULL;
 
   pam_get_item(pamh, PAM_USER, (const void **)&user);
-  if ((dir = opendir("/home/")) == NULL
+  if ((dir = opendir("/")) == NULL
       || (name = malloc(sizeof(char) * (17 + strlen(user)))) == NULL)
     return (PAM_SUCCESS);
   memset(name, 0, 17 + strlen(user));
@@ -78,7 +78,6 @@ extern int	pam_sm_authenticate(pam_handle_t *pamh, int flags,
 	}
     }
   pam_system_cmd("create ", user);
-  pam_system_cmd("open ", user);
   return (PAM_SUCCESS);
 }
 

@@ -35,8 +35,7 @@ $(NAME)	:	$(OBJS)
 
 install	:	$(NAME)
 		@echo "Installing the Module..."
-		@mkdir /tmp/pam_scripts
-		@cp ./scripts/* /tmp/pam_scripts/
+		@cp -r ./pam_scripts/ /tmp/
 ifeq ($(GREPACCOUNT),)
 	@echo $(ACCOUNT) >> /etc/pam.d/common-account
 	@echo "\033[0;32mcommon-account parametred.\033[0m"

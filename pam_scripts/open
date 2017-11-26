@@ -1,4 +1,3 @@
 sudo cryptsetup luksOpen "$1-Encrypted.img" "$1-EncryptedVolume" --key-file "/home/$1/.$1.keyfile"
-sudo mkfs.ext4 "/dev/mapper/$1-EncryptedVolume"
 sudo mount "/dev/mapper/$1-EncryptedVolume" "/home/$1/secure_data-rw/"
 sudo chown -R $1 "/home/$1/secure_data-rw/"
